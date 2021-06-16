@@ -1,0 +1,27 @@
+rules:
+  promotionalRules:
+    - name: A_BUY_N
+      promotionType: PRODUCT_LEVEL_BUY_N
+      conditionQty: 3
+      targetPrice: 130.00
+      items:
+        - A
+      priority: 0
+      promoLevel: ITEM
+    - name: B_BUY_N
+      promotionType: PRODUCT_LEVEL_BUY_N
+      conditionQty: 2
+      targetPrice: 45.00
+      items:
+        - B
+      priority: 0
+      promoLevel: ITEM
+    - name: COMBO_PROMO_C_D
+      promotionType: PRODUCT_COMBO_FIXED
+      conditionQty: 1
+      targetPrice: 30.00
+      items:
+        - C
+        - D
+      priority: 0
+      promoLevel: ITEM
