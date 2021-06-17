@@ -55,12 +55,12 @@ public class PromotionRules {
                             .stream()
                             .filter(cartItem -> comboItems.contains(cartItem.getItem().getSkuId()))
                             .collect(Collectors.toList());
-                    Integer comboItemCount = comboCartItems.stream()
+                    int comboItemCount = comboCartItems.stream()
                             .map(CartItem::getOrderedQty)
                             .min(Integer::compareTo).get();
                     cart.setCartTotal(promotionRule.getTargetPrice()
                             .multiply(BigDecimal.valueOf(comboItemCount)));
-                    comboCartItems.stream().forEach(cartItem -> {
+                    comboCartItems.forEach(cartItem -> {
                         cartItem.setPromoAppliedQty(comboItemCount);
                         cartItem.setRemainingQty(cartItem.getOrderedQty() - comboItemCount);
                         cartItem.recalculateTotal();
