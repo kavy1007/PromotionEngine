@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ConfigurationProperties(prefix = "rules")
 @Data
@@ -17,6 +18,11 @@ public class PromotionRules {
     private List<PromotionRule> promotionalRules;
 
     public void apply(Cart cart) {
+        applyItemPromotion(cart);
+        applyComboPromotion(cart);
+    }
+
+    private void applyItemPromotion(Cart cart) {
         cart.getCartItems().forEach(cartItem -> promotionalRules.stream()
                 .filter(PromotionRule::isItemPromo)
                 .filter(promotionRule -> promotionRule.isItemPromoValid(cartItem))
@@ -27,12 +33,39 @@ public class PromotionRules {
                     int orderedQty = cartItem.getOrderedQty();
                     int conditionalQty = promotionRule.getConditionQty();
                     int count = orderedQty / conditionalQty;
-                    int remaningQty = orderedQty % conditionalQty;
+                    int remainingQty = orderedQty % conditionalQty;
                     BigDecimal itemTargetPrice = promotionRule.getTargetPrice().multiply(BigDecimal.valueOf(count))
-                            .add(cartItem.getItem().getUnitPrice().multiply(BigDecimal.valueOf(remaningQty)));
+                            .add(cartItem.getItem().getUnitPrice().multiply(BigDecimal.valueOf(remainingQty)));
+                    cartItem.setPromoAppliedQty(count * conditionalQty);
+                    cartItem.setRemainingQty(remainingQty);
                     cartItem.setTargetPrice(targetPrice.min(itemTargetPrice));
                     cartItem.setPromoApplied(promotionRule);
                 }));
+    }
+
+    private void applyComboPromotion(Cart cart) {
+        promotionalRules.stream()
+                .filter(PromotionRule::isComboPromo)
+                .filter(promotionRule -> promotionRule.isComboPromoValid(cart))
+                .filter(promotionRule -> Objects.isNull(cart.getPromoApplied())
+                        || cart.getPromoApplied().getPriority() < promotionRule.getPriority())
+                .forEach(promotionRule -> {
+                    List<String> comboItems = promotionRule.getSkuIds();
+                    List<CartItem> comboCartItems = cart.getCartItems()
+                            .stream()
+                            .filter(cartItem -> comboItems.contains(cartItem.getItem().getSkuId()))
+                            .collect(Collectors.toList());
+                    Integer comboItemCount = comboCartItems.stream()
+                            .map(CartItem::getOrderedQty)
+                            .min(Integer::compareTo).get();
+                    cart.setCartTotal(promotionRule.getTargetPrice()
+                            .multiply(BigDecimal.valueOf(comboItemCount)));
+                    comboCartItems.stream().forEach(cartItem -> {
+                        cartItem.setPromoAppliedQty(comboItemCount);
+                        cartItem.setRemainingQty(cartItem.getOrderedQty() - comboItemCount);
+                        cartItem.recalculateTotal();
+                    });
+                });
     }
 
 }

@@ -64,6 +64,39 @@ public class TestPromotionApp {
 
     }
 
+    @Test
+    public void testCartServiceMultiQtyCombo() {
+        Cart cart = new Cart();
+        CartItem cartItem = getCartItemA();
+        cartItem.setOrderedQty(3);
+        CartItem cartItemB = getCartItemB();
+        cartItemB.setOrderedQty(5);
+        CartItem cartItemC = getCartItemC();
+        cartItemC.setOrderedQty(1);
+        CartItem cartItemD = getCartItemD();
+        cartItemD.setOrderedQty(1);
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
+        cartItems.add(cartItemB);
+        cartItems.add(cartItemC);
+        cartItems.add(cartItemD);
+        cart.setCartItems(cartItems);
+
+        cartService.applyPromotions(cart);
+        Assertions.assertEquals(BigDecimal.valueOf(280.0), cart.getCartTotal());
+
+    }
+
+    private CartItem getCartItemD() {
+        Item d = new Item();
+        d.setSkuId("D");
+        d.setUnitPrice(BigDecimal.valueOf(15));
+        CartItem cartItemD = new CartItem();
+        cartItemD.setItem(d);
+        return cartItemD;
+    }
+
     private CartItem getCartItemC() {
         Item c = new Item();
         c.setSkuId("C");

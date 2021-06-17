@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class PromotionRule {
@@ -21,5 +22,16 @@ public class PromotionRule {
 
     public boolean isItemPromoValid(CartItem cartItem) {
         return skuIds.contains(cartItem.getItem().getSkuId()) && cartItem.getOrderedQty() >= conditionQty;
+    }
+
+    public boolean isComboPromo() {
+        return getPromoLevel().equals(PromoLevel.COMBO_ITEM);
+    }
+
+    public boolean isComboPromoValid(Cart cart) {
+        List<String> cartSkuIds = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getOrderedQty() >= conditionQty)
+                .map(cartItem -> cartItem.getItem().getSkuId()).collect(Collectors.toList());
+        return cartSkuIds.containsAll(skuIds);
     }
 }

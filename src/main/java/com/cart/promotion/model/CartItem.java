@@ -13,10 +13,17 @@ public class CartItem {
     private BigDecimal targetPrice;
     private BigDecimal discountTotal = BigDecimal.ZERO;
     private PromotionRule promoApplied;
+    private int promoAppliedQty;
+    private int remainingQty;
+
 
     public void calculateTotal() {
         total = item.getUnitPrice().multiply(BigDecimal.valueOf(orderedQty));
         targetPrice = total;
-        discountTotal = BigDecimal.ZERO;
+    }
+
+    public void recalculateTotal() {
+        total = item.getUnitPrice().multiply(BigDecimal.valueOf(remainingQty));
+        targetPrice = total;
     }
 }

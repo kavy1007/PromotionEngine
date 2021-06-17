@@ -9,12 +9,14 @@ import java.util.List;
 public class Cart {
     private String cartId;
     private List<CartItem> cartItems;
-    private BigDecimal cartTotal;
+    private BigDecimal cartTotal = BigDecimal.ZERO;
+    private PromotionRule promoApplied;
+
 
     public void calculateTotal(PromotionRules promotionRules) {
         cartItems.forEach(CartItem::calculateTotal);
         promotionRules.apply(this);
-        cartTotal = cartItems.stream().map(CartItem::getTargetPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        cartTotal = cartTotal.add(cartItems.stream().map(CartItem::getTargetPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 }
 
