@@ -1,15 +1,19 @@
 package com.cart.promotion.model;
 
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Validated
 public class PromotionRule {
     private String name;
     private PromotionType promotionType;
+    @Positive
     private int conditionQty;
     private BigDecimal targetPrice;
     private List<String> skuIds;

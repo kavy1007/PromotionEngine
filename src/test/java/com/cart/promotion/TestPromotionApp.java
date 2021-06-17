@@ -44,6 +44,30 @@ public class TestPromotionApp {
     }
 
     @Test
+    public void testEmptyCart() {
+        Cart cart = new Cart(promotionRules);
+        cart.calculateTotal();
+        Assertions.assertEquals(BigDecimal.valueOf(0), cart.getCartTotal());
+    }
+
+    @Test
+    public void testCartWithOutPromo() {
+        Cart cart = new Cart(promotionRules);
+        CartItem cartItem = getCartItemA();
+        cartItem.setOrderedQty(1);
+        cartItem.getItem().setSkuId("E");
+        cartItem.getItem().setUnitPrice(BigDecimal.valueOf(20));
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
+        cart.setCartItems(cartItems);
+
+        cart.calculateTotal();
+        Assertions.assertEquals(BigDecimal.valueOf(20), cart.getCartTotal());
+    }
+    
+
+    @Test
     public void testCartServiceMultiQty() {
         Cart cart = new Cart(promotionRules);
         CartItem cartItem = getCartItemA();

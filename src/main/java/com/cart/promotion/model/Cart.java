@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class Cart {
-    private String cartId;
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
     private BigDecimal cartTotal = BigDecimal.ZERO;
     private PromotionRule promoApplied;
     @JsonIgnore

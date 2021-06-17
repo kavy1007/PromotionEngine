@@ -50,6 +50,25 @@ public class TestPromoAPI {
         Assert.assertEquals(HttpStatus.OK, cartResponse.getStatusCode());
     }
 
+    @Test
+    public void testPromoAPIBadRequest() {
+        Cart cart = new Cart();
+        CartItem cartItem = getCartItemA();
+        cartItem.setOrderedQty(1);
+        CartItem cartItemB = getCartItemB();
+        cartItemB.setOrderedQty(1);
+        CartItem cartItemC = getCartItemC();
+        cartItemC.setOrderedQty(1);
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
+        cartItems.add(cartItemB);
+        cartItems.add(cartItemC);
+        cart.setCartItems(cartItems);
+        ResponseEntity cartResponse = promoAPI(cart);
+        Assert.assertEquals(HttpStatus.OK, cartResponse.getStatusCode());
+    }
+
     private ResponseEntity promoAPI(Cart cart) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

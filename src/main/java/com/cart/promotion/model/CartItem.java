@@ -10,7 +10,6 @@ public class CartItem {
     private int orderedQty;
     private BigDecimal total;
     private BigDecimal targetPrice;
-    private BigDecimal discountTotal = BigDecimal.ZERO;
     private PromotionRule promoApplied;
     private int promoAppliedQty;
     private int remainingQty;
