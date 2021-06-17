@@ -3,7 +3,7 @@ package com.cart.promotion;
 import com.cart.promotion.model.Cart;
 import com.cart.promotion.model.CartItem;
 import com.cart.promotion.model.Item;
-import com.cart.promotion.service.CartService;
+import com.cart.promotion.model.PromotionRules;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +21,11 @@ import java.util.List;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestPromotionApp {
     @Autowired
-    private CartService cartService;
+    private PromotionRules promotionRules;
 
     @Test
     public void testCartService() {
-        Cart cart = new Cart();
+        Cart cart = new Cart(promotionRules);
         CartItem cartItem = getCartItemA();
         cartItem.setOrderedQty(1);
         CartItem cartItemB = getCartItemB();
@@ -39,13 +39,13 @@ public class TestPromotionApp {
         cartItems.add(cartItemC);
         cart.setCartItems(cartItems);
 
-        cartService.applyPromotions(cart);
+        cart.calculateTotal();
         Assertions.assertEquals(BigDecimal.valueOf(100), cart.getCartTotal());
     }
 
     @Test
     public void testCartServiceMultiQty() {
-        Cart cart = new Cart();
+        Cart cart = new Cart(promotionRules);
         CartItem cartItem = getCartItemA();
         cartItem.setOrderedQty(5);
         CartItem cartItemB = getCartItemB();
@@ -59,14 +59,14 @@ public class TestPromotionApp {
         cartItems.add(cartItemC);
         cart.setCartItems(cartItems);
 
-        cartService.applyPromotions(cart);
+        cart.calculateTotal();
         Assertions.assertEquals(BigDecimal.valueOf(370.0), cart.getCartTotal());
 
     }
 
     @Test
     public void testCartServiceMultiQtyCombo() {
-        Cart cart = new Cart();
+        Cart cart = new Cart(promotionRules);
         CartItem cartItem = getCartItemA();
         cartItem.setOrderedQty(3);
         CartItem cartItemB = getCartItemB();
@@ -82,13 +82,11 @@ public class TestPromotionApp {
         cartItems.add(cartItemC);
         cartItems.add(cartItemD);
         cart.setCartItems(cartItems);
-
-        cartService.applyPromotions(cart);
+        cart.calculateTotal();
         Assertions.assertEquals(BigDecimal.valueOf(280.0), cart.getCartTotal());
-
     }
 
-    private CartItem getCartItemD() {
+    static CartItem getCartItemD() {
         Item d = new Item();
         d.setSkuId("D");
         d.setUnitPrice(BigDecimal.valueOf(15));
@@ -97,7 +95,7 @@ public class TestPromotionApp {
         return cartItemD;
     }
 
-    private CartItem getCartItemC() {
+    static CartItem getCartItemC() {
         Item c = new Item();
         c.setSkuId("C");
         c.setUnitPrice(BigDecimal.valueOf(20));
@@ -106,7 +104,7 @@ public class TestPromotionApp {
         return cartItemC;
     }
 
-    private CartItem getCartItemB() {
+    static CartItem getCartItemB() {
         Item b = new Item();
         b.setSkuId("B");
         b.setUnitPrice(BigDecimal.valueOf(30));
@@ -115,7 +113,7 @@ public class TestPromotionApp {
         return cartItemB;
     }
 
-    private CartItem getCartItemA() {
+    static CartItem getCartItemA() {
         Item a = new Item();
         a.setSkuId("A");
         a.setUnitPrice(BigDecimal.valueOf(50));

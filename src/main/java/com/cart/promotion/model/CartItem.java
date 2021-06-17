@@ -5,7 +5,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-
 public class CartItem {
     private Item item;
     private int orderedQty;
