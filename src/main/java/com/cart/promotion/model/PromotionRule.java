@@ -13,5 +13,13 @@ public class PromotionRule {
     private BigDecimal targetPrice;
     private List<String> skuIds;
     private int priority;
-    private String promoLevel;
+    private PromoLevel promoLevel;
+
+    public boolean isItemPromo() {
+        return getPromoLevel().equals(PromoLevel.ITEM);
+    }
+
+    public boolean isItemPromoValid(CartItem cartItem) {
+        return skuIds.contains(cartItem.getItem().getSkuId()) && cartItem.getOrderedQty() >= conditionQty;
+    }
 }

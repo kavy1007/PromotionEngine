@@ -4,7 +4,7 @@ rules:
       promotionType: PRODUCT_LEVEL_BUY_N
       conditionQty: 3
       targetPrice: 130.00
-      items:
+      skuIds:
         - A
       priority: 0
       promoLevel: ITEM
@@ -12,7 +12,7 @@ rules:
       promotionType: PRODUCT_LEVEL_BUY_N
       conditionQty: 2
       targetPrice: 45.00
-      items:
+      skuIds:
         - B
       priority: 0
       promoLevel: ITEM
@@ -20,8 +20,8 @@ rules:
       promotionType: PRODUCT_COMBO_FIXED
       conditionQty: 1
       targetPrice: 30.00
-      items:
+      skuIds:
         - C
         - D
       priority: 0
-      promoLevel: ITEM
+      promoLevel: COMBO_ITEM

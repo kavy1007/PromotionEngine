@@ -12,12 +12,9 @@ public class Cart {
     private BigDecimal cartTotal;
 
     public void calculateTotal(PromotionRules promotionRules) {
-        cartTotal = this.cartItems.stream()
-                .map(cartItem -> {
-                    cartItem.calculateTotal();
-                    return cartItem.getTotal().subtract(cartItem.getDiscountTotal());
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cartItems.forEach(CartItem::calculateTotal);
+        promotionRules.apply(this);
+        cartTotal = cartItems.stream().map(CartItem::getTargetPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 
